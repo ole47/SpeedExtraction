@@ -594,39 +594,39 @@ for dir in os.listdir(bbox_dir):
                     #start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
 
                     # Calculate y values for each line
-                    plt.figure()
-                    plt.imshow(frames[0])
+                    # plt.figure()
+                    # plt.imshow(frames[0])
 
-                    y1 = l1[0] * x + l1[1]
-                    y2 = l2[0] * x + l2[1]
-                    y3 = l3[0] * x + l3[1]
-                    y4 = l4[0] * x + l4[1]
-                    y5 = m1[0] * x + m1[1]
-                    y6 = m2[0] * x + m2[1]
-                    y7 = d1[0] * x + d1[1]
-                    y8 = d2[0] * x + d2[1]
+                    # y1 = l1[0] * x + l1[1]
+                    # y2 = l2[0] * x + l2[1]
+                    # y3 = l3[0] * x + l3[1]
+                    # y4 = l4[0] * x + l4[1]
+                    # y5 = m1[0] * x + m1[1]
+                    # y6 = m2[0] * x + m2[1]
+                    # y7 = d1[0] * x + d1[1]
+                    # y8 = d2[0] * x + d2[1]
 
-                    points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, start_position])  # Create a numpy array for easy plotting
+                    # points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, start_position])  # Create a numpy array for easy plotting
                     #print(points)
-                    plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5)#, label="Points")
+                    # plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5)#, label="Points")
 
-                    # Plot each line
-                    plt.plot(x, y1, color="red")
-                    plt.plot(x, y2, color="red")
-                    plt.plot(x, y3, color="red")
-                    plt.plot(x, y4, color="red")
-                    plt.plot(x, y5, color="red")
-                    plt.plot(x, y6, color="red")
-                    #plt.plot(x, y7, label="d1", color="red")
-                    #plt.plot(x, y8, label="d2", color="red")
+                    # # Plot each line
+                    # plt.plot(x, y1, color="red")
+                    # plt.plot(x, y2, color="red")
+                    # plt.plot(x, y3, color="red")
+                    # plt.plot(x, y4, color="red")
+                    # plt.plot(x, y5, color="red")
+                    # plt.plot(x, y6, color="red")
+                    # #plt.plot(x, y7, label="d1", color="red")
+                    # #plt.plot(x, y8, label="d2", color="red")
 
-                    # Add labels and title
-                    plt.xlabel("x")
-                    plt.ylabel("y")
-                    plt.title(f"{vid}, frame {frame_start}")
-                    plt.legend()
+                    # # Add labels and title
+                    # plt.xlabel("x")
+                    # plt.ylabel("y")
+                    # plt.title(f"{vid}, frame {frame_start}")
+                    # plt.legend()
 
-                    plt.savefig("perspgrid.png")
+                    # plt.savefig("perspgrid.png")
                     break
                 except:
                     print("One of the lines is not complete")
@@ -796,58 +796,58 @@ for dir in os.listdir(bbox_dir):
                     #print(real_end_pos)
 
 
-                    plt.figure()
-                    plt.imshow(frames[-1])
+                    # plt.figure()
+                    # plt.imshow(frames[-1])
 
-                    y1 = l1[0] * x + l1[1]
-                    y2 = l2[0] * x + l2[1]
-                    y3 = l3[0] * x + l3[1]
-                    y4 = l4[0] * x + l4[1]
-                    y5 = m1[0] * x + m1[1]
-                    y6 = m2[0] * x + m2[1]
-                    y7 = d1[0] * x + d1[1]
-                    y8 = d2[0] * x + d2[1]
+                    # y1 = l1[0] * x + l1[1]
+                    # y2 = l2[0] * x + l2[1]
+                    # y3 = l3[0] * x + l3[1]
+                    # y4 = l4[0] * x + l4[1]
+                    # y5 = m1[0] * x + m1[1]
+                    # y6 = m2[0] * x + m2[1]
+                    # y7 = d1[0] * x + d1[1]
+                    # y8 = d2[0] * x + d2[1]
 
-                    points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, end_position])  # Create a numpy array for easy plotting
-                    #print(points)
-                    #colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'cyan', 'magenta']
+                    # points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, end_position])  # Create a numpy array for easy plotting
+                    # #print(points)
+                    # #colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'cyan', 'magenta']
 
-                    # Plot each point with a unique color and label
-                    #for i, point in enumerate(points):
-                     #   plt.scatter(point[0], point[1], color=colors[i], label=f"Point {i+1}")
-                    plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5)#, label="Points")
+                    # # Plot each point with a unique color and label
+                    # #for i, point in enumerate(points):
+                    #  #   plt.scatter(point[0], point[1], color=colors[i], label=f"Point {i+1}")
+                    # plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5)#, label="Points")
 
-                    # Plot each line
-                    plt.plot(x, y1, color="red")#, label="l1")
-                    plt.plot(x, y2, color="red")#, label="l2")
-                    plt.plot(x, y3, color="red")#, label="l3")
-                    plt.plot(x, y4, color="red")#, label="l4")
-                    plt.plot(x, y5, color="red")#, label="m1")
-                    plt.plot(x, y6, color="red")#, label="m2")
-                    #plt.plot(x, y7, color="red")#, label="d1")
-                    #plt.plot(x, y8, color="red")#, label="d2")
+                    # # Plot each line
+                    # plt.plot(x, y1, color="red")#, label="l1")
+                    # plt.plot(x, y2, color="red")#, label="l2")
+                    # plt.plot(x, y3, color="red")#, label="l3")
+                    # plt.plot(x, y4, color="red")#, label="l4")
+                    # plt.plot(x, y5, color="red")#, label="m1")
+                    # plt.plot(x, y6, color="red")#, label="m2")
+                    # #plt.plot(x, y7, color="red")#, label="d1")
+                    # #plt.plot(x, y8, color="red")#, label="d2")
 
                     # Add labels and title
                     dist_travelled = real_end_pos - real_start_pos
                     speed_pg = np.linalg.norm(dist_travelled)/((end_index - start_index)*1/25)
                     rel_error = abs(speed_pg - gt_speed_pg)/gt_speed_pg
 
-                    plt.xlabel("x")
-                    plt.ylabel("y")
-                    plt.title(f"{vid}, frame {frame_end}")
+                    # plt.xlabel("x")
+                    # plt.ylabel("y")
+                    # plt.title(f"{vid}, frame {frame_end}")
 
-                    plt.text(
-                        0.05, 0.95,  # X, Y position in axes fraction (0-1)
-                        f"Rel Error: {rel_error:.1%}",  # Format as percentage
-                        transform=plt.gca().transAxes,  # Use axes fraction coords
-                        fontsize=10,
-                        verticalalignment='top',
-                        bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8)
-                    )
+                    # plt.text(
+                    #     0.05, 0.95,  # X, Y position in axes fraction (0-1)
+                    #     f"Rel Error: {rel_error:.1%}",  # Format as percentage
+                    #     transform=plt.gca().transAxes,  # Use axes fraction coords
+                    #     fontsize=10,
+                    #     verticalalignment='top',
+                    #     bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8)
+                    # )
 
-                    plt.legend()
+                    # plt.legend()
 
-                    plt.savefig("perspgrid2.png")
+                    # plt.savefig("perspgrid2.png")
                     break
 
                 except:

@@ -252,479 +252,472 @@ lines = ["Side line left", "Side line top", "Side line right", "Side line bottom
          "Small rect. left main", "Small rect. left bottom", "Small rect. right top", "Small rect. right main", "Small rect. right bottom",
          "Middle line", "Circle central", "Circle left", "Circle right"]
 
-# speeds = []
-# gt_speeds = []
-# start_count = 0
-# end_count = 0
-# both_count = 0
-# for dir in os.listdir(bbox_dir):
-#     interpolated_dir = bbox_dir + dir + "/interpolated-predictions/"
-#     dir_name = [dir for dir in Path(interpolated_dir).iterdir()][0]
-#     file_path = Path(str(dir_name) + "/Labels-GameState.json")
-#     vid = str(dir_name.name)
+speeds = []
+gt_speeds = []
+start_count = 0
+end_count = 0
+both_count = 0
+for dir in os.listdir(bbox_dir):
+    interpolated_dir = bbox_dir + dir + "/interpolated-predictions/"
+    dir_name = [dir for dir in Path(interpolated_dir).iterdir()][0]
+    file_path = Path(str(dir_name) + "/Labels-GameState.json")
+    vid = str(dir_name.name)
 
-#     with file_path.open("r") as file:
-#         bbox_data = json.load(file)
+    with file_path.open("r") as file:
+        bbox_data = json.load(file)
 
-#     bounding_box_id = bounding_box_ids[vid]
+    bounding_box_id = bounding_box_ids[vid]
 
-#     label = parent_dir_labels + vid 
-#     label = label.replace("-main", "") + ".json"
+    label = parent_dir_labels + vid 
+    label = label.replace("-main", "") + ".json"
 
-#     video = parent_dir_vids + vid + ".mp4"
+    video = parent_dir_vids + vid + ".mp4"
 
-#     with open(label, 'r') as file:
-#         data = json.load(file)
+    with open(label, 'r') as file:
+        data = json.load(file)
 
-#     stadium_dim = data["metadata"]["team_home"]["stadium_dim"]
-#     height_vid = data["media_attributes"]["height"]
-#     width_vid = data["media_attributes"]["width"]
+    stadium_dim = data["metadata"]["team_home"]["stadium_dim"]
+    height_vid = data["media_attributes"]["height"]
+    width_vid = data["media_attributes"]["width"]
 
-#     for i in range(len(bounding_box_id)):
-#         print(vid)
-#         real_start_pos = None
-#         real_end_pos = None 
+    for i in range(len(bounding_box_id)):
+        print(vid)
+        real_start_pos = None
+        real_end_pos = None 
         
-#         fps = 25
-#         gt_speed = data["momentum_tackler"][i]["speed"]
-#         frame_start = data["events"][i]["frame_start"] - 10
-#         frame_end = data["events"][i]["frame_start"]
+        fps = 25
+        gt_speed = data["momentum_tackler"][i]["speed"]
+        frame_start = data["events"][i]["frame_start"] - 10
+        frame_end = data["events"][i]["frame_start"]
 
-#         start_index = next((j for j in range(len(bounding_box_id[i])) if bounding_box_id[i][j] is not None), None)
-#         end_index = next((j for j in reversed(range(len(bounding_box_id[i]))) if bounding_box_id[i][j] is not None), None)
+        start_index = next((j for j in range(len(bounding_box_id[i])) if bounding_box_id[i][j] is not None), None)
+        end_index = next((j for j in reversed(range(len(bounding_box_id[i]))) if bounding_box_id[i][j] is not None), None)
 
-#         if start_index is None or end_index is None:
-#             print("Player not detected")
-#             continue
+        if start_index is None or end_index is None:
+            print("Player not detected")
+            continue
 
-#         start_id = bounding_box_id[i][start_index]
-#         end_id = bounding_box_id[i][end_index]
+        start_id = bounding_box_id[i][start_index]
+        end_id = bounding_box_id[i][end_index]
 
-#         frame_start += start_index + 1
-#         frame_end -= 10 - end_index - 1
+        frame_start += start_index + 1
+        frame_end -= 10 - end_index - 1
 
-#         if frame_start == frame_end:
-#             print("We don't have two frames to calculate speed!")
-#             continue
+        if frame_start == frame_end:
+            print("We don't have two frames to calculate speed!")
+            continue
 
 
-#         height_pnl = bbox_data["images"][0]["height"]
-#         width_pnl = bbox_data["images"][0]["width"]
+        height_pnl = bbox_data["images"][0]["height"]
+        width_pnl = bbox_data["images"][0]["width"]
 
-#         annotations = bbox_data["annotations"]
+        annotations = bbox_data["annotations"]
 
-#         image_start_id = f"{frame_start:06d}"
-#         image_end_id = f"{frame_end:06d}"
+        image_start_id = f"{frame_start:06d}"
+        image_end_id = f"{frame_end:06d}"
 
-#         lines_start = find_lines(image_start_id, annotations)
-#         lines_end = find_lines(image_end_id, annotations)
+        lines_start = find_lines(image_start_id, annotations)
+        lines_end = find_lines(image_end_id, annotations)
 
-#         if lines_start is None or lines_end is None:
-#             print("Couldn't find any lines")
-#             continue
+        if lines_start is None or lines_end is None:
+            print("Couldn't find any lines")
+            continue
 
-#         possible_squares_start, keypoint_numbers_start = find_possible_squares(lines_start.keys())
-#         possible_squares_end, keypoint_numbers_end = find_possible_squares(lines_end.keys())
+        possible_squares_start, keypoint_numbers_start = find_possible_squares(lines_start.keys())
+        possible_squares_end, keypoint_numbers_end = find_possible_squares(lines_end.keys())
 
-#         annotation_start = find_annotation(image_start_id, start_id, annotations)
-#         annotation_end = find_annotation(image_end_id, end_id, annotations)
+        annotation_start = find_annotation(image_start_id, start_id, annotations)
+        annotation_end = find_annotation(image_end_id, end_id, annotations)
 
-#         start_x = annotation_start["bbox_image"]["x"]
-#         start_y = annotation_start["bbox_image"]["y"]
-#         start_w = annotation_start["bbox_image"]["w"]
-#         start_h = annotation_start["bbox_image"]["h"]
-#         start_position = np.array([(start_x + start_w/2)*width_vid/width_pnl, (start_y + start_h)*height_vid/height_pnl])
+        start_x = annotation_start["bbox_image"]["x"]
+        start_y = annotation_start["bbox_image"]["y"]
+        start_w = annotation_start["bbox_image"]["w"]
+        start_h = annotation_start["bbox_image"]["h"]
+        start_position = np.array([(start_x + start_w/2)*width_vid/width_pnl, (start_y + start_h)*height_vid/height_pnl])
 
-#         end_x = annotation_end["bbox_image"]["x"]
-#         end_y = annotation_end["bbox_image"]["y"]
-#         end_w = annotation_end["bbox_image"]["w"]
-#         end_h = annotation_end["bbox_image"]["h"]
-#         end_position = np.array([(end_x + end_w/2)*width_vid/width_pnl, (end_y + end_h)*height_vid/height_pnl])
+        end_x = annotation_end["bbox_image"]["x"]
+        end_y = annotation_end["bbox_image"]["y"]
+        end_w = annotation_end["bbox_image"]["w"]
+        end_h = annotation_end["bbox_image"]["h"]
+        end_position = np.array([(end_x + end_w/2)*width_vid/width_pnl, (end_y + end_h)*height_vid/height_pnl])
 
-#         position_list = calc_position_list_extra(stadium_dim[0], stadium_dim[1]) 
-#         #print(possible_squares_start)
-#         #print(possible_squares_end)
-#         start_count += len(possible_squares_start) > 0
-#         end_count += len(possible_squares_end) > 0
-#         both_count += (len(possible_squares_start) > 0 and len(possible_squares_end) > 0)
-#         for i, square in enumerate(possible_squares_start):
-#             if len(square) == 4:
-#                 try:
-#                     point_1, point_2 = lines_start[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l1 = increase_and_constant(point_1, point_2)
+        position_list = calc_position_list_extra(stadium_dim[0], stadium_dim[1]) 
+        #print(possible_squares_start)
+        #print(possible_squares_end)
+        start_count += len(possible_squares_start) > 0
+        end_count += len(possible_squares_end) > 0
+        both_count += (len(possible_squares_start) > 0 and len(possible_squares_end) > 0)
+        for i, square in enumerate(possible_squares_start):
+            if len(square) == 4:
+                try:
+                    point_1, point_2 = lines_start[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l1 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_start[lines[square[1]]][0], lines_start[lines[square[1]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l2 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_start[lines[square[1]]][0], lines_start[lines[square[1]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l2 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_start[lines[square[2]]][0], lines_start[lines[square[2]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l3 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_start[lines[square[2]]][0], lines_start[lines[square[2]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l3 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_start[lines[square[3]]][0], lines_start[lines[square[3]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l4 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_start[lines[square[3]]][0], lines_start[lines[square[3]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l4 = increase_and_constant(point_1, point_2)
 
-#                     P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
+                    P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
 
-#                     _, _, _, _, d1, d2 = calc_lines_and_diag(P1, P2, P3, P4)
-#                     CP1, CP2, CP3, MP1, MP2, MP3, MP4, m1, m2 = find_cross_midpoints_and_midlines(l1, l2, l3, l4, d1, d2)
-#                     R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
+                    _, _, _, _, d1, d2 = calc_lines_and_diag(P1, P2, P3, P4)
+                    CP1, CP2, CP3, MP1, MP2, MP3, MP4, m1, m2 = find_cross_midpoints_and_midlines(l1, l2, l3, l4, d1, d2)
+                    R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
 
-#                     keypoints = keypoint_numbers_start[i]
-#                     x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
-#                     y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
+                    keypoints = keypoint_numbers_start[i]
+                    x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
+                    y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
 
-#                     real_start_pos = find_pos(start_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
-#                     x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
-#                     #print(real_start_pos)
-#                     real_start_pos[0], real_start_pos[1] = real_start_pos[0] + x_displacement, y_displacement - real_start_pos[1] 
-#                     #print(P1, P2, P3, P4, start_position)
-#                     #print(real_start_pos)
+                    real_start_pos = find_pos(start_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
+                    x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
+                    #print(real_start_pos)
+                    real_start_pos[0], real_start_pos[1] = real_start_pos[0] + x_displacement, y_displacement - real_start_pos[1] 
+                    #print(P1, P2, P3, P4, start_position)
+                    #print(real_start_pos)
 
-#                     x = np.linspace(0, 1500, 500)
+                    x = np.linspace(0, 1500, 500)
 
-#                     if frame_start != frame_end:
-#                         frames = extract_frame(video, frame_start - 1, frame_end - 1)
-#                         start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
-#                     else: 
-#                         print("We don't have two frames to calculate speed!")
-#                         continue
-#                     print(frames)
-#                     # Calculate y values for each line
-#                     plt.figure()
-#                     plt.imshow(frames[0])
+                    if frame_start != frame_end:
+                        frames = extract_frame(video, frame_start - 1, frame_end - 1)
+                        start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
+                    else: 
+                        print("We don't have two frames to calculate speed!")
+                        continue
+                    print(frames)
+                    # Calculate y values for each line
+                    # plt.figure()
+                    # plt.imshow(frames[0])
 
-#                     y1 = l1[0] * x + l1[1]
-#                     y2 = l2[0] * x + l2[1]
-#                     y3 = l3[0] * x + l3[1]
-#                     y4 = l4[0] * x + l4[1]
-#                     y5 = m1[0] * x + m1[1]
-#                     y6 = m2[0] * x + m2[1]
-#                     y7 = d1[0] * x + d1[1]
-#                     y8 = d2[0] * x + d2[1]
+                    # y1 = l1[0] * x + l1[1]
+                    # y2 = l2[0] * x + l2[1]
+                    # y3 = l3[0] * x + l3[1]
+                    # y4 = l4[0] * x + l4[1]
+                    # y5 = m1[0] * x + m1[1]
+                    # y6 = m2[0] * x + m2[1]
+                    # y7 = d1[0] * x + d1[1]
+                    # y8 = d2[0] * x + d2[1]
 
-#                     points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, start_position])  # Create a numpy array for easy plotting
-#                     #print(points)
-#                     #plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5, label="Points")
+                    # points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, start_position])  # Create a numpy array for easy plotting
+                    # #print(points)
+                    # #plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5, label="Points")
 
-#                     # Plot each line
-#                     plt.plot(x, y1, label="l1")
-#                     plt.plot(x, y2, label="l2")
-#                     plt.plot(x, y3, label="l3")
-#                     plt.plot(x, y4, label="l4")
-#                     plt.plot(x, y5, label="m1")
-#                     plt.plot(x, y6, label="m2")
-#                     plt.plot(x, y7, label="d1")
-#                     plt.plot(x, y8, label="d2")
+                    # # Plot each line
+                    # plt.plot(x, y1, label="l1")
+                    # plt.plot(x, y2, label="l2")
+                    # plt.plot(x, y3, label="l3")
+                    # plt.plot(x, y4, label="l4")
+                    # plt.plot(x, y5, label="m1")
+                    # plt.plot(x, y6, label="m2")
+                    # plt.plot(x, y7, label="d1")
+                    # plt.plot(x, y8, label="d2")
 
-#                     # Add labels and title
-#                     plt.xlabel("x")
-#                     plt.ylabel("y")
-#                     plt.title(f"{vid}, {frame_start}")
-#                     plt.legend()
+                    # # Add labels and title
+                    # plt.xlabel("x")
+                    # plt.ylabel("y")
+                    # plt.title(f"{vid}, {frame_start}")
+                    # plt.legend()
 
-#                     plt.savefig("perspgrid.png")
-#                     break
-#                 except:
-#                     print("One of the lines is not complete")
+                    # plt.savefig("perspgrid.png")
+                    break
+                except:
+                    print("One of the lines is not complete")
 
-#             elif len(square) == 2:
-#                 try: 
-#                     circle_points = lines_start[lines[square[1]]]
-#                     A, B, C, D, E = find_ellipse(circle_points, height_vid, width_vid)
+            elif len(square) == 2:
+                try: 
+                    circle_points = lines_start[lines[square[1]]]
+                    A, B, C, D, E = find_ellipse(circle_points, height_vid, width_vid)
 
-#                     point_1, point_2 = lines_start[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     m1 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_start[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    m1 = increase_and_constant(point_1, point_2)
 
-#                     x_1, x_2 = find_intersect_ellipse_line(A, B, C, D, E, m1)
-#                     y_1 = m1[0]*x_1 + m1[1]
-#                     y_2 = m1[0]*x_2 + m1[1] 
+                    x_1, x_2 = find_intersect_ellipse_line(A, B, C, D, E, m1)
+                    y_1 = m1[0]*x_1 + m1[1]
+                    y_2 = m1[0]*x_2 + m1[1] 
 
-#                     if y_1 > y_2:
-#                         MP2 = np.array([x_1, y_1])
-#                         MP4 = np.array([x_2, y_2])
-#                     else:
-#                         MP4 = np.array([x_1, y_1])
-#                         MP2 = np.array([x_2, y_2])
+                    if y_1 > y_2:
+                        MP2 = np.array([x_1, y_1])
+                        MP4 = np.array([x_2, y_2])
+                    else:
+                        MP4 = np.array([x_1, y_1])
+                        MP2 = np.array([x_2, y_2])
 
-#                     l3 = find_ellipse_tangent(A, B, C, D, E, MP2)
-#                     l4 = find_ellipse_tangent(A, B, C, D, E, MP4)
+                    l3 = find_ellipse_tangent(A, B, C, D, E, MP2)
+                    l4 = find_ellipse_tangent(A, B, C, D, E, MP4)
 
-#                     CP3 = find_intersection(l3, l4)
+                    CP3 = find_intersection(l3, l4)
 
-#                     if frame_start != frame_end:
-#                         frames = extract_frame(video, frame_start - 1, frame_end - 1)
-#                         start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
-#                     else: 
-#                         print("We don't have two frames to calculate speed!")
-#                         continue
-#                     keypoints_start, keypoints_end = start_frame_results[0].keypoints.xy, end_frame_results[0].keypoints.xy
+                    if frame_start != frame_end:
+                        frames = extract_frame(video, frame_start - 1, frame_end - 1)
+                        start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
+                    else: 
+                        print("We don't have two frames to calculate speed!")
+                        continue
+                    keypoints_start, keypoints_end = start_frame_results[0].keypoints.xy, end_frame_results[0].keypoints.xy
                     
-#                     if keypoints_start[0][16][0]!=0.0:
-#                         MP1 = np.array(keypoints_start[0][16])
+                    if keypoints_start[0][16][0]!=0.0:
+                        MP1 = np.array(keypoints_start[0][16])
                         
-#                         m2 = increase_and_constant(MP1, CP3)
-#                         CP1 = find_intersection(m1, m2)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(MP1, CP3)
+                        CP1 = find_intersection(m1, m2)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
 
-#                         if np.linalg.norm(point_1 - MP1) > np.linalg.norm(point_2 - MP1):
-#                             MP3 = point_1 
-#                         else:
-#                             MP3 = point_2 
+                        if np.linalg.norm(point_1 - MP1) > np.linalg.norm(point_2 - MP1):
+                            MP3 = point_1 
+                        else:
+                            MP3 = point_2 
 
-#                     elif keypoints_start[0][19][0]!=0.0:
-#                         CP1 = np.array(keypoints_start[0][19])
+                    elif keypoints_start[0][19][0]!=0.0:
+                        CP1 = np.array(keypoints_start[0][19])
 
-#                         m2 = increase_and_constant(CP1, CP3)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(CP1, CP3)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
                         
-#                         if point_1[0] > point_2[0]:
-#                             MP3 = point_1 
-#                             MP1 = point_2 
+                        if point_1[0] > point_2[0]:
+                            MP3 = point_1 
+                            MP1 = point_2 
 
-#                     elif keypoints_start[0][22][0]!=0.0:
-#                         MP3 = np.array(keypoints_start[0][22])
+                    elif keypoints_start[0][22][0]!=0.0:
+                        MP3 = np.array(keypoints_start[0][22])
 
-#                         m2 = increase_and_constant(MP3, CP3)
-#                         CP1 = find_intersection(m1, m2)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(MP3, CP3)
+                        CP1 = find_intersection(m1, m2)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
 
-#                         if np.linalg.norm(point_1 - MP3) > np.linalg.norm(point_2 - MP3):
-#                             MP1 = point_1 
-#                         else:
-#                             MP1 = point_2 
+                        if np.linalg.norm(point_1 - MP3) > np.linalg.norm(point_2 - MP3):
+                            MP1 = point_1 
+                        else:
+                            MP1 = point_2 
 
-#                     l1 = find_ellipse_tangent(A, B, C, D, E, MP1)
-#                     l2 = find_ellipse_tangent(A, B, C, D, E, MP3)
+                    l1 = find_ellipse_tangent(A, B, C, D, E, MP1)
+                    l2 = find_ellipse_tangent(A, B, C, D, E, MP3)
 
-#                     P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
-#                     CP2 = find_intersection(l1, l2)
+                    P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
+                    CP2 = find_intersection(l1, l2)
 
-#                     R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
+                    R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
 
-#                     keypoints = keypoint_numbers_start[i]
-#                     x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
-#                     y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
+                    keypoints = keypoint_numbers_start[i]
+                    x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
+                    y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
 
-#                     real_start_pos = find_pos(start_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
-#                     x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
-#                     #print(real_start_pos)
-#                     real_start_pos[0], real_start_pos[1] = real_start_pos[0] + x_displacement, y_displacement - real_start_pos[1] 
+                    real_start_pos = find_pos(start_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
+                    x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
+                    #print(real_start_pos)
+                    real_start_pos[0], real_start_pos[1] = real_start_pos[0] + x_displacement, y_displacement - real_start_pos[1] 
 
-#                     break
-#                 except:
-#                     print("Line or ellipse is not complete")
+                    break
+                except:
+                    print("Line or ellipse is not complete")
 
             
 
-#         for i, square in enumerate(possible_squares_end):
-#             if len(square) == 4:
-#                 try:
-#                     point_1, point_2 = lines_end[lines[square[0]]][0], lines_end[lines[square[0]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l1 = increase_and_constant(point_1, point_2)
+        for i, square in enumerate(possible_squares_end):
+            if len(square) == 4:
+                try:
+                    point_1, point_2 = lines_end[lines[square[0]]][0], lines_end[lines[square[0]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l1 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_end[lines[square[1]]][0], lines_end[lines[square[1]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l2 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_end[lines[square[1]]][0], lines_end[lines[square[1]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l2 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_end[lines[square[2]]][0], lines_end[lines[square[2]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l3 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_end[lines[square[2]]][0], lines_end[lines[square[2]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l3 = increase_and_constant(point_1, point_2)
 
-#                     point_1, point_2 = lines_end[lines[square[3]]][0], lines_end[lines[square[3]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     l4 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_end[lines[square[3]]][0], lines_end[lines[square[3]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    l4 = increase_and_constant(point_1, point_2)
 
-#                     P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
+                    P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
 
-#                     _, _, _, _, d1, d2 = calc_lines_and_diag(P1, P2, P3, P4)
-#                     CP1, CP2, CP3, MP1, MP2, MP3, MP4, m1, m2 = find_cross_midpoints_and_midlines(l1, l2, l3, l4, d1, d2)
-#                     R, C = find_quadrant(end_position, P1, P2, P3, P4, CP1, CP2, CP3)
+                    _, _, _, _, d1, d2 = calc_lines_and_diag(P1, P2, P3, P4)
+                    CP1, CP2, CP3, MP1, MP2, MP3, MP4, m1, m2 = find_cross_midpoints_and_midlines(l1, l2, l3, l4, d1, d2)
+                    R, C = find_quadrant(end_position, P1, P2, P3, P4, CP1, CP2, CP3)
 
-#                     keypoints = keypoint_numbers_end[i]
-#                     x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
-#                     y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
+                    keypoints = keypoint_numbers_end[i]
+                    x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
+                    y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
 
-#                     real_end_pos = find_pos(end_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
-#                     x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
-#                     #print(real_end_pos)
-#                     real_end_pos[0], real_end_pos[1] = real_end_pos[0] + x_displacement, y_displacement - real_end_pos[1] 
-#                     #print(P1, P2, P3, P4, end_position, l1, l2, l3, l4, m1, m2, d1, d2, CP1, CP2, CP3)
-#                     #print(real_end_pos)
+                    real_end_pos = find_pos(end_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
+                    x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
+                    #print(real_end_pos)
+                    real_end_pos[0], real_end_pos[1] = real_end_pos[0] + x_displacement, y_displacement - real_end_pos[1] 
+                    #print(P1, P2, P3, P4, end_position, l1, l2, l3, l4, m1, m2, d1, d2, CP1, CP2, CP3)
+                    #print(real_end_pos)
 
-#                     plt.figure()
-#                     plt.imshow(frames[-1])
+                    # plt.figure()
+                    # plt.imshow(frames[-1])
 
-#                     y1 = l1[0] * x + l1[1]
-#                     y2 = l2[0] * x + l2[1]
-#                     y3 = l3[0] * x + l3[1]
-#                     y4 = l4[0] * x + l4[1]
-#                     y5 = m1[0] * x + m1[1]
-#                     y6 = m2[0] * x + m2[1]
-#                     y7 = d1[0] * x + d1[1]
-#                     y8 = d2[0] * x + d2[1]
+                    # y1 = l1[0] * x + l1[1]
+                    # y2 = l2[0] * x + l2[1]
+                    # y3 = l3[0] * x + l3[1]
+                    # y4 = l4[0] * x + l4[1]
+                    # y5 = m1[0] * x + m1[1]
+                    # y6 = m2[0] * x + m2[1]
+                    # y7 = d1[0] * x + d1[1]
+                    # y8 = d2[0] * x + d2[1]
 
-#                     points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, end_position])  # Create a numpy array for easy plotting
-#                     #print(points)
-#                     colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'cyan', 'magenta']
+                    # points = np.array([P1, P2, P3, P4, CP1, MP1, MP2, MP3, MP4, end_position])  # Create a numpy array for easy plotting
+                    # #print(points)
+                    # colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'cyan', 'magenta']
 
-#                     # Plot each point with a unique color and label
-#                     # for i, point in enumerate(points):
-#                     #     plt.scatter(point[0], point[1], color=colors[i], label=f"Point {i+1}")
-#                     plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5, label="Points")
+                    # # Plot each point with a unique color and label
+                    # # for i, point in enumerate(points):
+                    # #     plt.scatter(point[0], point[1], color=colors[i], label=f"Point {i+1}")
+                    # plt.scatter(points[:, 0], points[:, 1], color='black', zorder=5, label="Points")
 
-#                     # Plot each line
-#                     plt.plot(x, y1, label="l1")
-#                     plt.plot(x, y2, label="l2")
-#                     plt.plot(x, y3, label="l3")
-#                     plt.plot(x, y4, label="l4")
-#                     plt.plot(x, y5, label="m1")
-#                     plt.plot(x, y6, label="m2")
-#                     plt.plot(x, y7, label="d1")
-#                     plt.plot(x, y8, label="d2")
+                    # # Plot each line
+                    # plt.plot(x, y1, label="l1")
+                    # plt.plot(x, y2, label="l2")
+                    # plt.plot(x, y3, label="l3")
+                    # plt.plot(x, y4, label="l4")
+                    # plt.plot(x, y5, label="m1")
+                    # plt.plot(x, y6, label="m2")
+                    # plt.plot(x, y7, label="d1")
+                    # plt.plot(x, y8, label="d2")
 
-#                     # Add labels and title
-#                     plt.xlabel("x")
-#                     plt.ylabel("y")
-#                     plt.title(f"{vid}, {frame_end}")
-#                     plt.legend()
+                    # # Add labels and title
+                    # plt.xlabel("x")
+                    # plt.ylabel("y")
+                    # plt.title(f"{vid}, {frame_end}")
+                    # plt.legend()
 
-#                     plt.savefig("/itf-fi-ml/home/olekrus/master/master/perspgrid2.png")
-#                     break
+                    # plt.savefig("/itf-fi-ml/home/olekrus/master/master/perspgrid2.png")
+                    break
 
-#                 except:
-#                     print("One of the lines is not complete")
+                except:
+                    print("One of the lines is not complete")
 
-#             elif len(square) == 2:
-#                 try: 
-#                     circle_points = lines_end[lines[square[1]]]
-#                     A, B, C, D, E = find_ellipse(circle_points, height_vid, width_vid)
+            elif len(square) == 2:
+                try: 
+                    circle_points = lines_end[lines[square[1]]]
+                    A, B, C, D, E = find_ellipse(circle_points, height_vid, width_vid)
 
-#                     point_1, point_2 = lines_end[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
-#                     point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
-#                     point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
-#                     m1 = increase_and_constant(point_1, point_2)
+                    point_1, point_2 = lines_end[lines[square[0]]][0], lines_start[lines[square[0]]][-1]
+                    point_1 = np.array([point_1["x"]*width_vid, point_1["y"]*height_vid])
+                    point_2 = np.array([point_2["x"]*width_vid, point_2["y"]*height_vid])
+                    m1 = increase_and_constant(point_1, point_2)
 
-#                     x_1, x_2 = find_intersect_ellipse_line(A, B, C, D, E, m1)
-#                     y_1 = m1[0]*x_1 + m1[1]
-#                     y_2 = m1[0]*x_2 + m1[1] 
+                    x_1, x_2 = find_intersect_ellipse_line(A, B, C, D, E, m1)
+                    y_1 = m1[0]*x_1 + m1[1]
+                    y_2 = m1[0]*x_2 + m1[1] 
 
-#                     if y_1 > y_2:
-#                         MP2 = np.array([x_1, y_1])
-#                         MP4 = np.array([x_2, y_2])
-#                     else:
-#                         MP4 = np.array([x_1, y_1])
-#                         MP2 = np.array([x_2, y_2])
+                    if y_1 > y_2:
+                        MP2 = np.array([x_1, y_1])
+                        MP4 = np.array([x_2, y_2])
+                    else:
+                        MP4 = np.array([x_1, y_1])
+                        MP2 = np.array([x_2, y_2])
 
-#                     l3 = find_ellipse_tangent(A, B, C, D, E, MP2)
-#                     l4 = find_ellipse_tangent(A, B, C, D, E, MP4)
+                    l3 = find_ellipse_tangent(A, B, C, D, E, MP2)
+                    l4 = find_ellipse_tangent(A, B, C, D, E, MP4)
 
-#                     CP3 = find_intersection(l3, l4)
+                    CP3 = find_intersection(l3, l4)
 
-#                     if frame_start != frame_end:
-#                         frames = extract_frame(video, frame_start - 1, frame_end - 1)
-#                         start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
-#                     else: 
-#                         print("We don't have two frames to calculate speed!")
-#                         continue
-#                     keypoints_start, keypoints_end = start_frame_results[0].keypoints.xy, end_frame_results[0].keypoints.xy
+                    if frame_start != frame_end:
+                        frames = extract_frame(video, frame_start - 1, frame_end - 1)
+                        start_frame_results, end_frame_results = model(frames[0]), model(frames[-1]) 
+                    else: 
+                        print("We don't have two frames to calculate speed!")
+                        continue
+                    keypoints_start, keypoints_end = start_frame_results[0].keypoints.xy, end_frame_results[0].keypoints.xy
                     
-#                     if keypoints_end[0][16][0]!=0.0:
-#                         MP1 = np.array(keypoints_end[0][16])
+                    if keypoints_end[0][16][0]!=0.0:
+                        MP1 = np.array(keypoints_end[0][16])
                         
-#                         m2 = increase_and_constant(MP1, CP3)
-#                         CP1 = find_intersection(m1, m2)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(MP1, CP3)
+                        CP1 = find_intersection(m1, m2)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
 
-#                         if np.linalg.norm(point_1 - MP1) > np.linalg.norm(point_2 - MP1):
-#                             MP3 = point_1 
-#                         else:
-#                             MP3 = point_2 
+                        if np.linalg.norm(point_1 - MP1) > np.linalg.norm(point_2 - MP1):
+                            MP3 = point_1 
+                        else:
+                            MP3 = point_2 
 
-#                     elif keypoints_end[0][19][0]!=0.0:
-#                         CP1 = np.array(keypoints_end[0][19])
+                    elif keypoints_end[0][19][0]!=0.0:
+                        CP1 = np.array(keypoints_end[0][19])
 
-#                         m2 = increase_and_constant(CP1, CP3)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(CP1, CP3)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
                         
-#                         if point_1[0] > point_2[0]:
-#                             MP3 = point_1 
-#                             MP1 = point_2 
+                        if point_1[0] > point_2[0]:
+                            MP3 = point_1 
+                            MP1 = point_2 
 
-#                     elif keypoints_end[0][22][0]!=0.0:
-#                         MP3 = np.array(keypoints_end[0][22])
+                    elif keypoints_end[0][22][0]!=0.0:
+                        MP3 = np.array(keypoints_end[0][22])
 
-#                         m2 = increase_and_constant(MP3, CP3)
-#                         CP1 = find_intersection(m1, m2)
-#                         point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
+                        m2 = increase_and_constant(MP3, CP3)
+                        CP1 = find_intersection(m1, m2)
+                        point_1, point_2 = find_intersect_ellipse_line(A, B, C, D, E, m2)
 
-#                         if np.linalg.norm(point_1 - MP3) > np.linalg.norm(point_2 - MP3):
-#                             MP1 = point_1 
-#                         else:
-#                             MP1 = point_2 
+                        if np.linalg.norm(point_1 - MP3) > np.linalg.norm(point_2 - MP3):
+                            MP1 = point_1 
+                        else:
+                            MP1 = point_2 
 
-#                     l1 = find_ellipse_tangent(A, B, C, D, E, MP1)
-#                     l2 = find_ellipse_tangent(A, B, C, D, E, MP3)
+                    l1 = find_ellipse_tangent(A, B, C, D, E, MP1)
+                    l2 = find_ellipse_tangent(A, B, C, D, E, MP3)
 
-#                     P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
-#                     CP2 = find_intersection(l1, l2)
+                    P1, P2, P3, P4 = find_corner_points(l1, l2, l3, l4)
+                    CP2 = find_intersection(l1, l2)
 
-#                     R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
+                    R, C = find_quadrant(start_position, P1, P2, P3, P4, CP1, CP2, CP3)
 
-#                     keypoints = keypoint_numbers_end[i]
-#                     x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
-#                     y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
+                    keypoints = keypoint_numbers_end[i]
+                    x_len = abs(position_list[keypoints[1] - 1][0] - position_list[keypoints[0] - 1][0])
+                    y_len = abs(position_list[keypoints[2] - 1][1] - position_list[keypoints[0] - 1][1])
 
-#                     real_end_pos = find_pos(end_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
-#                     x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
-#                     #print(real_start_pos)
-#                     real_end_pos[0], real_end_pos[1] = real_end_pos[0] + x_displacement, y_displacement - real_end_pos[1] 
+                    real_end_pos = find_pos(end_position, R, C, x_len, y_len, P3, P4, l1, l2, l3, l4, m1, m2)
+                    x_displacement, y_displacement = position_list[keypoints[0] - 1] #Point P1 is "origin" of perspective grid
+                    #print(real_start_pos)
+                    real_end_pos[0], real_end_pos[1] = real_end_pos[0] + x_displacement, y_displacement - real_end_pos[1] 
                     
-#                     break
-#                 except:
-#                     print("Line or ellipse is not complete")
+                    break
+                except:
+                    print("Line or ellipse is not complete")
 
-#         if real_end_pos is not None and real_start_pos is not None:
-#             dist_travelled = real_end_pos - real_start_pos
-#             speed = np.linalg.norm(dist_travelled)/((end_index - start_index)*1/25)
-#             print("Speed: ", speed, "gt: ", gt_speed)
-#         else: 
-#             print("Could not find positions!")
-#             continue
+        if real_end_pos is not None and real_start_pos is not None:
+            dist_travelled = real_end_pos - real_start_pos
+            speed = np.linalg.norm(dist_travelled)/((end_index - start_index)*1/25)
+            print("Speed: ", speed, "gt: ", gt_speed)
+        else: 
+            print("Could not find positions!")
+            continue
         
-#         if speed < 13: #we don't want the impossibly high speeds
-#             speeds.append(speed)
-#             gt_speeds.append(gt_speed)
-#         else:
-#             print("Speed exceeds 13 m/s!")
+        if speed < 13: #we don't want the impossibly high speeds
+            speeds.append(speed)
+            gt_speeds.append(gt_speed)
+        else:
+            print("Speed exceeds 13 m/s!")
 
-# #print(start_count, end_count, both_count)
-# speeds = np.array(speeds)
-# gt_speeds = np.array(gt_speeds)
-# print(len(gt_speeds))
-# print(f"Avg. relative error perspective grid: {np.sum(abs(speeds - gt_speeds)/gt_speeds)/len(gt_speeds)*100}%")
-# print(f"Root mean squared error (RMSE): {np.sqrt(1/len(gt_speeds)*np.sum((speeds - gt_speeds)**2))}")
-# print(f"Mean of gt: {np.mean(gt_speeds)}")
+#print(start_count, end_count, both_count)
+speeds = np.array(speeds)
+gt_speeds = np.array(gt_speeds)
+print(len(gt_speeds))
+print(f"Avg. relative error perspective grid: {np.sum(abs(speeds - gt_speeds)/gt_speeds)/len(gt_speeds)*100}%")
+print(f"Root mean squared error (RMSE): {np.sqrt(1/len(gt_speeds)*np.sum((speeds - gt_speeds)**2))}")
+print(f"Mean of gt: {np.mean(gt_speeds)}")
 
-#export LD_LIBRARY_PATH=/storage/software/PyTorch/1.7.0/lib:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/storage/software/bzip2/1.0.8-GCCcore-10.3.0/lib:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/storage/software/Python/3.9.5-GCCcore-10.3.0/lib:$LD_LIBRARY_PATH
 
-#export PATH=/storage/software/FFmpeg/4.4.2-GCCcore-11.3.0/bin:$PATH
-#export LD_LIBRARY_PATH=/storage/software/FFmpeg/4.4.2-GCCcore-11.3.0/lib:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/storage/software/PyTorch-bundle/1.10.0-MKL-bundle-pre-optimised/lib:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/storage/software/CUDA/11.7.0/lib64:$LD_LIBRARY_PATH
+
