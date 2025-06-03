@@ -3,9 +3,10 @@ Code for speed extraction of players in football videos.
 
 # Dependencies
 Create and activate environment
-'''bash
+```bash
 python -m venv myenv
 source venv/bin/activate
+```bash
 
 The code runs with python 3.10, but potentially with other versions too. The repo was used in ml-node (https://www.uio.no/tjenester/it/forskning/kompetansehuber/uio-ai-hub-node-project/it-resources/ml-nodes/), which uses GCCcore. Therefore, the following packages were donwloaded form ml-node, compatible with GCCcore:
 - **PyTorch**: 1.7.0
@@ -17,6 +18,7 @@ The other packages can be installed with:
 
 ```bash
 pip install -r requirements.txt
+```bash
 
 # Run
 Run run_pose.py to estimate keypoints and get the bounding box ids and coordinates from running Deep-EIoU (https://github.com/hsiangwei0903/Deep-EIoU), and run the speed prediction based on this data with speed_extraction.py. speed_extraction.py calculates the homography transformation and predicts the player speeds for the events.
