@@ -8,7 +8,7 @@ python -m venv myenv
 source venv/bin/activate
 ```
 
-The code runs with python 3.10, but potentially with other versions too. The repo was used in ml-node (https://www.uio.no/tjenester/it/forskning/kompetansehuber/uio-ai-hub-node-project/it-resources/ml-nodes/), which uses GCCcore. Therefore, the following packages were donwloaded form ml-node, compatible with GCCcore:
+The code runs with python 3.10, but potentially with other versions too. The repo was used in ml-node (https://www.uio.no/tjenester/it/forskning/kompetansehuber/uio-ai-hub-node-project/it-resources/ml-nodes/), which uses GCCcore. Therefore, the following packages were donwloaded from ml-node, compatible with GCCcore:
 - **PyTorch**: 1.7.0
 - **bzip2**: 1.0.8 (built with GCCcore 10.3.0)
 - **GCCcore**: 10.3.0
