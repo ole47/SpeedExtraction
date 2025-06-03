@@ -21,6 +21,6 @@ pip install -r requirements.txt
 ```
 
 # Run
-Run run_pose.py to estimate keypoints (can train the model using train_pose.py, or use the weights at https://drive.google.com/file/d/1L19dFxpzKHyzABrjgbb7GpkMg6xxiYUN/view?usp=drive_link) and get the bounding box ids and coordinates from running Deep-EIoU (https://github.com/hsiangwei0903/Deep-EIoU), and run the speed prediction based on this data with speed_extraction.py. speed_extraction.py calculates the homography transformation and predicts the player speeds for the events.
+Run ```bash run_pose.py``` to estimate keypoints (can train the model using ```bash train_pose.py```, or use the weights at https://drive.google.com/file/d/1L19dFxpzKHyzABrjgbb7GpkMg6xxiYUN/view?usp=drive_link) and get the bounding box ids and coordinates from running Deep-EIoU (https://github.com/hsiangwei0903/Deep-EIoU), and run the speed prediction based on this data with ```bash speed_extraction.py```. ```bash speed_extraction.py``` calculates the homography transformation and predicts the player speeds for the events.
 
-Get bounding boxes, keypoint and line predictions from the pipeline using PnLCalib (https://github.com/eirikeg1/dribbling-detection-pipeline), and run using speed_extraction_pnl_calib.py (speed_extraction_gamestate.py is the same script, but runs on the SoccerNet Gamestate Reconstruction data). 
+Get bounding boxes, keypoint and line predictions from the pipeline using PnLCalib (https://github.com/eirikeg1/dribbling-detection-pipeline), and run ```bash speed_extraction_pnl_calib.py``` to get the predicted speeds (```bash speed_extraction_gamestate.py``` is the same script, but runs on the SoccerNet Gamestate Reconstruction data). 
